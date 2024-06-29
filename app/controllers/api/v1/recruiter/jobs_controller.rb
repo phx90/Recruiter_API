@@ -6,10 +6,16 @@ module Api
         before_action :set_job, only: %i[show update destroy]
 
         def index
-          jobs = Rails.cache.fetch(cache_key_for_jobs, expires_in: 12.hours) do
-            @current_recruiter.jobs.to_a
+          job_ids = Rails.cache.fetch(cache_key_for_jobs, expires_in: 12.hours) do
+            @current_recruiter.jobs.page(params[:page]).per(params[:per_page] || 25).pluck(:id)
           end
-          render json: jobs
+
+          jobs = Job.where(id: job_ids).page(params[:page]).per(params[:per_page] || 25)
+
+          render json: {
+            jobs: jobs.as_json(only: %i[id title description start_date end_date status skills]),
+            meta: pagination_meta(jobs)
+          }
         end
 
         def show
@@ -43,11 +49,11 @@ module Api
         end
 
         def cache_key_for_jobs
-          "recruiter_#{@current_recruiter.id}_jobs"
+          "recruiter_#{@current_recruiter.id}_jobs_page_#{params[:page] || 1}_per_#{params[:per_page] || 25}"
         end
 
         def expire_jobs_cache
-          Rails.cache.delete(cache_key_for_jobs)
+          Rails.cache.delete_matched("recruiter_#{@current_recruiter.id}_jobs_*")
         end
 
         def save_and_render_job(job, status = :ok)
@@ -57,6 +63,16 @@ module Api
           else
             render json: job.errors, status: :unprocessable_entity
           end
+        end
+
+        def pagination_meta(jobs)
+          {
+            current_page: jobs.current_page,
+            next_page: jobs.next_page,
+            prev_page: jobs.prev_page,
+            total_pages: jobs.total_pages,
+            total_count: jobs.total_count
+          }
         end
       end
     end

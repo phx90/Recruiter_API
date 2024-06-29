@@ -2,16 +2,23 @@ require 'rails_helper'
 
 RSpec.describe 'Jobs API', type: :request do
   let!(:recruiter) { create(:recruiter) }
-  let!(:jobs) { create_list(:job, 10, recruiter: recruiter) }
+  let!(:jobs) { create_list(:job, 30, recruiter: recruiter, status: 'active') } # Aumente o número de jobs para testar a paginação
   let(:job_id) { jobs.first.id }
   let(:headers) { valid_headers }
 
   describe 'GET /api/v1/public/jobs' do
-    before { get '/api/v1/public/jobs', headers: headers }
+    before { get '/api/v1/public/jobs', headers: headers, params: { page: 1, per_page: 10 } }
 
     it 'returns jobs' do
-      expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      expect(json['jobs']).not_to be_empty
+      expect(json['jobs'].size).to eq(10)
+    end
+
+    it 'returns pagination meta data' do
+      expect(json['meta']).not_to be_empty
+      expect(json['meta']['current_page']).to eq(1)
+      expect(json['meta']['total_pages']).to eq(3)
+      expect(json['meta']['total_count']).to eq(30)
     end
 
     it 'returns status code 200' do

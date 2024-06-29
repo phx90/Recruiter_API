@@ -18,6 +18,8 @@ gem 'jbuilder', '~> 2.7'
 # JWT authentication
 gem 'jwt'
 
+gem 'kaminari'
+
 # Use bcrypt for password hashing
 gem 'bcrypt', '~> 3.1.7'
 

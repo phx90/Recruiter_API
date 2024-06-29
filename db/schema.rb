@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_06_28_183933) do
+ActiveRecord::Schema.define(version: 2024_06_29_142954) do
 
+  # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "jobs", force: :cascade do |t|
@@ -43,6 +44,7 @@ ActiveRecord::Schema.define(version: 2024_06_28_183933) do
     t.bigint "job_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["job_id", "email"], name: "index_submissions_on_job_id_and_email", unique: true
     t.index ["job_id"], name: "index_submissions_on_job_id"
   end
 
