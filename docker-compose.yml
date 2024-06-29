@@ -1,0 +1,19 @@
+# docker-compose.yml
+
+version: '3'
+services:
+  web:
+    build: .
+    command: bundle exec rails server -b 0.0.0.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:1324@db:5432/RecruiterAPI_development
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1324
+      POSTGRES_DB: RecruiterAPI_development
