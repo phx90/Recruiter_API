@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'Jobs API', type: :request do
   let!(:recruiter) { create(:recruiter) }
-  let!(:jobs) { create_list(:job, 30, recruiter: recruiter, status: 'active') } # Aumente o número de jobs para testar a paginação
+  let!(:jobs) { create_list(:job, 30, recruiter: recruiter, status: 'active') }
   let(:job_id) { jobs.first.id }
-  let(:headers) { valid_headers }
+  let(:headers) { valid_headers.merge({ 'Accept': 'application/json' }) }
 
   describe 'GET /api/v1/public/jobs' do
     before { get '/api/v1/public/jobs', headers: headers, params: { page: 1, per_page: 10 } }

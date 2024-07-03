@@ -3,32 +3,27 @@ module Api
     module Recruiter
       class SubmissionsController < ApplicationController
         before_action :authorize_request
-        before_action :set_submission, only: %i[show update destroy]
         before_action :set_job, only: %i[index create]
+        before_action :set_submission, only: %i[show update destroy]
 
         def index
-          render json: @job.submissions
+          @submissions = @job.submissions
+          @submissions = @submissions.by_status(params[:status]) if params[:status].present?
+          render :index
         end
 
         def show
-          render json: @submission
+          render :show
         end
 
         def create
-          @submission = Submission.new(submission_params)
-          if @submission.save
-            render json: @submission, status: :created
-          else
-            render json: @submission.errors, status: :unprocessable_entity
-          end
+          result = SubmissionCreationService.new(@job, submission_params).call
+          render_response(result)
         end
 
         def update
-          if @submission.update(submission_params)
-            render json: @submission
-          else
-            render json: @submission.errors, status: :unprocessable_entity
-          end
+          @submission.update(submission_params)
+          render_response(update_response(@submission))
         end
 
         def destroy
@@ -49,6 +44,16 @@ module Api
 
         def submission_params
           params.require(:submission).permit(:name, :email, :mobile_phone, :resume, :job_id)
+        end
+
+        def render_response(result)
+          render json: result[:errors] || result[:submission], status: result[:status]
+        end
+
+        def update_response(submission)
+          return { submission: submission, status: :ok } unless submission.errors.any?
+
+          { errors: submission.errors, status: :unprocessable_entity }
         end
       end
     end

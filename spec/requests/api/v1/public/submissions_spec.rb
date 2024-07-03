@@ -4,21 +4,22 @@ RSpec.describe 'Submissions API', type: :request do
   let!(:recruiter) { create(:recruiter) }
   let!(:job) { create(:job, recruiter: recruiter) }
   let(:job_id) { job.id }
-  let(:valid_attributes) { { name: 'Jane Doe', email: 'jane@example.com', mobile_phone: '1234567890', resume: 'Link to resume or resume content' }.to_json }
   let(:headers) { valid_headers }
 
   describe 'POST /api/v1/public/jobs/:job_id/submissions' do
     context 'when the request is valid' do
-      before { post "/api/v1/public/jobs/#{job_id}/submissions", params: valid_attributes, headers: headers }
+      let(:valid_attributes) { attributes_for(:submission, job_id: job_id) }
+
+      before { post "/api/v1/public/jobs/#{job_id}/submissions", params: { submission: valid_attributes }.to_json, headers: headers }
 
       it 'creates a submission' do
-        expect(json['name']).to eq('Jane Doe')
+        expect(json['name']).to eq(valid_attributes[:name])
         expect(response).to have_http_status(201)
       end
     end
 
     context 'when the request is invalid' do
-      before { post "/api/v1/public/jobs/#{job_id}/submissions", params: { name: nil }.to_json, headers: headers }
+      before { post "/api/v1/public/jobs/#{job_id}/submissions", params: { submission: attributes_for(:submission, job_id: job_id, name: nil) }.to_json, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)

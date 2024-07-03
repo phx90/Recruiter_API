@@ -1,8 +1,7 @@
 FactoryBot.define do
-    factory :recruiter do
-      name { "John Doe" }
-      email { "john@example.com" }
-      password { "password123" }
-    end
+  factory :recruiter do
+    name { Faker::Name.name }
+    email { Faker::Internet.email }
+    password { Faker::Internet.password(min_length: 8) }
   end
-  
+end

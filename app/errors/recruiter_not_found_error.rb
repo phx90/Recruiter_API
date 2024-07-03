@@ -1,0 +1,1 @@
+class RecruiterNotFoundError < StandardError; end
