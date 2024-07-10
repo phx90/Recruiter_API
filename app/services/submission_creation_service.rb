@@ -1,4 +1,3 @@
-# app/services/submission_creation_service.rb
 class SubmissionCreationService
     def initialize(job, submission_params)
       @job = job

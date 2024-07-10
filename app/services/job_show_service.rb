@@ -5,7 +5,7 @@ class JobShowService
     end
   
     def call
-      @recruiter.jobs.find(@job_id)
+      recruiter.jobs.find(job_id)
     end
   end
   

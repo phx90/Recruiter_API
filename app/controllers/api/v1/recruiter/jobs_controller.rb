@@ -16,13 +16,17 @@ module Api
         end
 
         def create
-          result = JobCreationService.new(@current_recruiter, job_params).call
-          render_response(result)
+          job = @current_recruiter.jobs.build(job_params)
+          return render json: job.errors, status: :unprocessable_entity unless job.save
+
+          render json: job, status: :created
         end
 
         def update
-          result = JobUpdateService.new(@job, job_params).call
-          render_response(result)
+          @job.assign_attributes(job_params)
+          return render json: @job.errors, status: :unprocessable_entity unless @job.save
+
+          render json: @job, status: :ok
         end
 
         def destroy
@@ -41,11 +45,9 @@ module Api
         end
 
         def render_response(result)
-          if result[:errors]
-            render json: result[:errors], status: result[:status]
-          else
-            render json: result[:job], status: result[:status]
-          end
+          return render json: result[:errors], status: result[:status] if result[:errors]
+
+          render json: result[:job], status: result[:status]
         end
       end
     end

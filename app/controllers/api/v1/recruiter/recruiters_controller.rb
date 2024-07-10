@@ -2,25 +2,15 @@ module Api
   module V1
     module Recruiter
       class RecruitersController < ApplicationController
-        before_action :authorize_request, except: [:login, :create]
+        before_action :authorize_request, except: [:create]
         before_action :set_recruiter, only: %i[show update destroy]
 
         rescue_from RecruiterNotFoundError, with: :render_not_found
         rescue_from InvalidRecruiterError, with: :render_invalid_recruiter
 
-        def login
-          @recruiter = ::Recruiter.find_by_email(login_params[:email])
-          if @recruiter&.authenticate(login_params[:password])
-            @token = jwt_encode(recruiter_id: @recruiter.id)
-            render :login, status: :ok
-          else
-            render json: { error: 'Unauthorized' }, status: :unauthorized
-          end
-        end
-
         def index
-          @recruiters = RecruiterIndexService.new.call
-          render :index, status: :ok
+          result = RecruiterIndexService.new(params).call
+          render json: result, status: :ok
         end
 
         def show
@@ -45,11 +35,8 @@ module Api
         private
 
         def set_recruiter
-          @recruiter = RecruiterShowService.new(params[:id]).call
-        end
-
-        def login_params
-          params.permit(:email, :password)
+          @recruiter = Recruiter.find_by(id: params[:id])
+          raise RecruiterNotFoundError, "Recruiter with ID #{params[:id]} not found" unless @recruiter
         end
 
         def recruiter_params

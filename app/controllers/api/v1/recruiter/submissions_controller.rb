@@ -7,8 +7,9 @@ module Api
         before_action :set_submission, only: %i[show update destroy]
 
         def index
-          @submissions = @job.submissions
-          @submissions = @submissions.by_status(params[:status]) if params[:status].present?
+          result = SubmissionsIndexService.new(@job, params).call
+          @submissions = result[:submissions]
+          @meta = result[:meta]
           render :index
         end
 

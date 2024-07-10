@@ -51,5 +51,5 @@ group :test do
 end
 
 gem 'faker'
-gem 'ransack'
 gem 'jsonapi-serializer'
+gem 'ransack'

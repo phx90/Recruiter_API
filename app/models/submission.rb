@@ -1,4 +1,3 @@
-# app/models/submission.rb
 class Submission < ApplicationRecord
   belongs_to :job
 

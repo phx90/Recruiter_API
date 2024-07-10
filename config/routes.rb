@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       namespace :recruiter do
-        post 'recruiters/login', to: 'recruiters#login' # Mudança do caminho de login para o novo controlador
+        post 'login', to: 'sessions#login'
         resources :recruiters
         resources :jobs do
           resources :submissions, only: [:index, :create]

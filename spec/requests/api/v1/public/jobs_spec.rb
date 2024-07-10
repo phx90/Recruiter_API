@@ -6,6 +6,10 @@ RSpec.describe 'Jobs API', type: :request do
   let(:job_id) { jobs.first.id }
   let(:headers) { valid_headers.merge({ 'Accept': 'application/json' }) }
 
+  def json
+    JSON.parse(response.body)
+  end
+
   describe 'GET /api/v1/public/jobs' do
     before { get '/api/v1/public/jobs', headers: headers, params: { page: 1, per_page: 10 } }
 
@@ -39,3 +43,4 @@ RSpec.describe 'Jobs API', type: :request do
     end
   end
 end
+
