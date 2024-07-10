@@ -53,3 +53,5 @@ end
 gem 'faker'
 gem 'jsonapi-serializer'
 gem 'ransack'
+gem 'searchkick'
+gem "elasticsearch"

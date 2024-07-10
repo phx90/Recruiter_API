@@ -1,4 +1,5 @@
 class Job < ApplicationRecord
+  searchkick
   belongs_to :recruiter
   has_many :submissions, dependent: :destroy
 

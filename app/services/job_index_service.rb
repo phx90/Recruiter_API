@@ -16,18 +16,16 @@ class JobIndexService
 
   def apply_search_filters
     query = @params[:search]
-    jobs = Job.active_or_open.ransack(
-      m: 'or',
-      title_cont: query,
-      description_cont: query,
-      skills_cont: query
-    ).result
-  
-    jobs = Job.active_or_open.ransack({}).result unless query.present?
-  
-    jobs.page(@params[:page]).per(@params[:per_page] || 25)
+    page = @params[:page]
+    per_page = @params[:per_page] || 25
+
+    search_jobs(query, page, per_page)
   end
-  
+
+  def search_jobs(query, page, per_page)
+    search_query = query.present? ? query : '*'
+    Job.search(search_query, where: { status: ['active', 'open'], recruiter_id: @recruiter.id }, page: page, per_page: per_page)
+  end
 
   def pagination_meta(jobs)
     {

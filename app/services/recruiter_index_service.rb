@@ -15,16 +15,16 @@ class RecruiterIndexService
 
   def apply_search_filters
     query = @params[:search]
-    recruiters = Recruiter.ransack(
-      m: 'or',
-      name_cont: query,
-      email_cont: query
-    ).result
-    recruiters = Recruiter.ransack({}).result unless query.present?
-  
-    recruiters.page(@params[:page]).per(@params[:per_page] || 25)
+    page = @params[:page]
+    per_page = @params[:per_page] || 25
+
+    search_recruiters(query, page, per_page)
   end
-  
+
+  def search_recruiters(query, page, per_page)
+    search_query = query.present? ? query : '*'
+    Recruiter.search(search_query, where: {}, page: page, per_page: per_page)
+  end
 
   def pagination_meta(recruiters)
     {

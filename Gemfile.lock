@@ -71,6 +71,14 @@ GEM
     database_cleaner-core (2.0.1)
     date (3.3.4)
     diff-lcs (1.5.1)
+    elastic-transport (8.3.2)
+      faraday (< 3)
+      multi_json
+    elasticsearch (8.14.0)
+      elastic-transport (~> 8.3)
+      elasticsearch-api (= 8.14.0)
+    elasticsearch-api (8.14.0)
+      multi_json
     erubi (1.13.0)
     factory_bot (6.1.0)
       activesupport (>= 5.0.0)
@@ -79,8 +87,14 @@ GEM
       railties (>= 5.0.0)
     faker (3.4.1)
       i18n (>= 1.8.11, < 2)
+    faraday (2.8.1)
+      base64
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.0.2)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    hashie (5.0.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     jbuilder (2.12.0)
@@ -123,6 +137,7 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     msgpack (1.7.2)
+    multi_json (1.15.0)
     net-imap (0.3.7)
       date
       net-protocol
@@ -192,6 +207,10 @@ GEM
       rspec-support (~> 3.10)
     rspec-support (3.13.1)
     ruby-progressbar (1.13.0)
+    ruby2_keywords (0.0.5)
+    searchkick (5.2.4)
+      activemodel (>= 5.2)
+      hashie
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
     sprockets (4.2.1)
@@ -221,6 +240,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   database_cleaner-active_record
+  elasticsearch
   factory_bot_rails (~> 6.1.0)
   faker
   jbuilder (~> 2.7)
@@ -235,6 +255,7 @@ DEPENDENCIES
   rails (~> 6.0.0)
   ransack
   rspec-rails (~> 4.0.0)
+  searchkick
   shoulda-matchers (~> 4.0)
   tzinfo-data
 

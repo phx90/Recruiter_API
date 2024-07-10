@@ -1,5 +1,6 @@
 class Recruiter < ApplicationRecord
-  has_secure_password
+  has_secure_password  
+  searchkick
   has_many :jobs, dependent: :destroy
 
   validates :name, presence: true

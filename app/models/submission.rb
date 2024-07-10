@@ -1,4 +1,5 @@
 class Submission < ApplicationRecord
+  searchkick
   belongs_to :job
 
   validates :name, :email, :mobile_phone, :resume, :job_id, presence: true
